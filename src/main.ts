@@ -1,13 +1,7 @@
-import { randomBytes } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { ConsoleLogger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import {
-  NestNodeApplication,
-  NodeAdapter,
-  type NodeRequest,
-  type NodeResponse,
-} from '@nestjs/platform-node';
+import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { z } from 'zod';
@@ -33,8 +27,23 @@ async function bootstrap() {
     { bufferLogs: true },
   );
 
-  // Helmet 8's default headers, built into Nest.
-  app.useSecurityHeaders();
+  // Helmet 8's default headers, built into Nest. Outside production, scripts may
+  // also be inline or from jsDelivr, for the Scalar API reference at /reference.
+  app.useSecurityHeaders(
+    env.NODE_ENV === 'production'
+      ? undefined
+      : {
+          contentSecurityPolicy: {
+            directives: {
+              scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                'https://cdn.jsdelivr.net',
+              ],
+            },
+          },
+        },
+  );
   // Off unless origins are listed: same-origin only.
   if (env.CORS_ORIGINS.length > 0) {
     app.enableCors({
@@ -49,7 +58,8 @@ async function bootstrap() {
 
   app.useLogger(new ConsoleLogger({ json: env.NODE_ENV === 'production' }));
 
-  // API reference (Scalar) at /docs, OpenAPI definition at /docs-json. Not in production.
+  // API reference (Scalar) at /reference, OpenAPI definition at /openapi.json and
+  // /openapi.yaml. Not in production.
   if (env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('NestJS TypeScript Starter API')
@@ -59,17 +69,12 @@ async function bootstrap() {
       .setVersion('1.0')
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, documentFactory, { ui: false });
-    app.use('/docs', (req: NodeRequest, res: NodeResponse) => {
-      // Scalar's scripts (CDN and inline) need a nonce under the app's CSP.
-      const nonce = randomBytes(16).toString('base64');
-      const csp = String(res.getHeader('Content-Security-Policy'));
-      res.setHeader(
-        'Content-Security-Policy',
-        csp.replace('script-src ', `script-src 'nonce-${nonce}' `),
-      );
-      apiReference({ url: '/docs-json', nonce })(req, res);
+    SwaggerModule.setup('reference', app, documentFactory, {
+      ui: false,
+      jsonDocumentUrl: 'openapi.json',
+      yamlDocumentUrl: 'openapi.yaml',
     });
+    app.use('/reference', apiReference({ url: '/openapi.json' }));
   }
 
   await app.listen(env.PORT);

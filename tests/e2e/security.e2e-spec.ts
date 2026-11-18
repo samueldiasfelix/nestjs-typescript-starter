@@ -26,7 +26,7 @@ describe('Security (e2e)', () => {
     app = moduleFixture.createNestApplication<NestNodeApplication>(
       new NodeAdapter(),
     );
-    // Same setup as src/main.ts, with one trusted origin.
+    // Same setup as src/main.ts in production, with one trusted origin.
     app.useSecurityHeaders();
     app.enableCors({
       origin: [TRUSTED],
