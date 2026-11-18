@@ -1,11 +1,28 @@
 import { z } from 'zod';
 
+/** A serialized origin, such as `https://app.example.com`: no path, no trailing slash. */
+const origin = z.url().refine((value) => new URL(value).origin === value, {
+  message: 'Must be an origin, like https://app.example.com (no path)',
+});
+
 export const envSchema = z
   .object({
     NODE_ENV: z
       .enum(['development', 'production', 'test'])
       .default('development'),
     PORT: z.coerce.number().int().positive().default(3000),
+    // Comma-separated browser origins allowed to call the API (CORS) and to send
+    // state-changing requests (CSRF). Empty: same-origin only.
+    CORS_ORIGINS: z
+      .string()
+      .default('')
+      .transform((value) =>
+        value
+          .split(',')
+          .map((entry) => entry.trim())
+          .filter(Boolean),
+      )
+      .pipe(z.array(origin)),
     // Defaults to the Postgres in compose.yaml.
     DATABASE_URL: z.url().default('postgres://app:app@localhost:5432/app'),
     REDIS_HOST: z.string().min(1).default('localhost'),

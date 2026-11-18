@@ -7,7 +7,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { HttpClientErrorFilter } from './common/filters/http-client-error.filter.js';
 import { StorageErrorFilter } from './common/filters/storage-error.filter.js';
-import { groupedValidationErrors } from './common/validation/grouped-validation-errors.pipe.js';
+import { groupedValidationErrors } from './common/pipes/grouped-validation-errors.pipe.js';
 import { envSchema } from './config/env.schema.js';
 import { AppCacheModule } from './infra/cache/cache.module.js';
 import { DatabaseModule } from './infra/database/database.module.js';
