@@ -45,7 +45,10 @@ async function bootstrap() {
   // OpenAPI docs: UI at /docs, definition at /docs-json and /docs-yaml. Not in production.
   if (env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('API')
+      .setTitle('NestJS TypeScript Starter API')
+      .setDescription(
+        'REST API of the NestJS TypeScript starter. Rate limited per client IP; errors follow the Nest HTTP exception format.',
+      )
       .setVersion('1.0')
       .build();
     SwaggerModule.setup('docs', app, () =>

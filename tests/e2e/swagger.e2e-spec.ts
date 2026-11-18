@@ -17,7 +17,10 @@ describe('OpenAPI docs (e2e)', () => {
     // Same setup as src/main.ts.
     app.useSecurityHeaders();
     const config = new DocumentBuilder()
-      .setTitle('API')
+      .setTitle('NestJS TypeScript Starter API')
+      .setDescription(
+        'REST API of the NestJS TypeScript starter. Rate limited per client IP; errors follow the Nest HTTP exception format.',
+      )
       .setVersion('1.0')
       .build();
     SwaggerModule.setup('docs', app, () =>
