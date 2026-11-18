@@ -8,7 +8,7 @@ import {
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
 import { Job, Queue } from 'bullmq';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 // Needs a running Redis: `docker compose up -d`.
 const QUEUE = `test-${randomUUID()}`;

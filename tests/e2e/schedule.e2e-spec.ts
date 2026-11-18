@@ -7,7 +7,7 @@ import {
   SchedulerRegistry,
 } from '@nestjs/schedule';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 @Injectable()
 class TestJobs {

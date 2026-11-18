@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 @Injectable()
 class TestListener {

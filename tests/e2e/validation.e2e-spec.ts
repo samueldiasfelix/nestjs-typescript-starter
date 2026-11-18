@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
 import { z } from 'zod';
-import { AppModule } from './../src/app.module.js';
-import { ROOT_KEY } from '../src/grouped-validation-errors.pipe.js';
+import { AppModule } from '../../src/app.module.js';
+import { ROOT_KEY } from '../../src/grouped-validation-errors.pipe.js';
 
 const echoSchema = z.object({ name: z.string().min(1) });
 

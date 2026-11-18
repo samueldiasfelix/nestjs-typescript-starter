@@ -6,7 +6,7 @@ import {
   StorageDisk,
 } from '@nestjs/storage';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 @Controller('files')
 class FilesTestController {

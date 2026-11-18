@@ -1,6 +1,6 @@
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 describe('AppController (e2e)', () => {
   let app: NestNodeApplication;

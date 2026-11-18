@@ -6,7 +6,7 @@ import {
 } from '@nestjs/http-client';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 @Controller()
 class ProxyController {

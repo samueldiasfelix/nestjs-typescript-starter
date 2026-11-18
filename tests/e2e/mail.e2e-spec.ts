@@ -1,7 +1,7 @@
 import { InMemoryMailTransport, Mailer, MailTransport } from '@nestjs/mail';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module.js';
+import { AppModule } from '../../src/app.module.js';
 
 describe('Mail (e2e)', () => {
   let app: NestNodeApplication;
