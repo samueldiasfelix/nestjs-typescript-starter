@@ -2,7 +2,7 @@ import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
 import { sql } from 'drizzle-orm';
 import { AppModule } from '../../src/app.module.js';
-import { DatabaseService } from '../../src/database/database.service.js';
+import { DatabaseService } from '../../src/infra/database/database.service.js';
 
 // Needs a running Postgres: `docker compose up -d`.
 describe('Database (e2e)', () => {

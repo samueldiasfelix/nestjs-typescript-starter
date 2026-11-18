@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { AppModule } from './app.module.js';
-import { Env } from './env.schema.js';
+import { Env } from './config/env.schema.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestNodeApplication>(

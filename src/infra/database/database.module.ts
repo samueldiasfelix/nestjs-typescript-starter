@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DrizzleModule } from '@nestjs/drizzle';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Env } from '../env.schema.js';
+import { Env } from '../../config/env.schema.js';
 import { DatabaseService } from './database.service.js';
 import * as schema from './schema.js';
 
