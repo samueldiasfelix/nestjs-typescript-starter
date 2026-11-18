@@ -14,6 +14,7 @@
         "@nestjs/mail": "^0.0.2",
         "@nestjs/platform-node": "^12.5.1",
         "@nestjs/schedule": "^12.0.4",
+        "@nestjs/storage": "^0.0.5",
         "bullmq": "^6.7.7",
         "ioredis": "^6.0.0",
         "reflect-metadata": "^0.2.2",
@@ -214,6 +215,8 @@
     "@nestjs/schedule": ["@nestjs/schedule@12.0.4", "", { "dependencies": { "cron": "4.4.0" }, "peerDependencies": { "@nestjs/common": "^11.0.0 || ^12.0.0", "@nestjs/core": "^11.0.0 || ^12.0.0" } }, "sha512-C797UxK2mOB8kTSwEfHmwy3Ut72qSLkS/BLFHR3jPW/NZKZkqGFpoX5Ga3QlLdeugCg6NxrXhvgOMxioHhFzXg=="],
 
     "@nestjs/schematics": ["@nestjs/schematics@12.0.13", "", { "dependencies": { "@angular-devkit/core": "22.2.6", "@angular-devkit/schematics": "22.2.6", "comment-json": "5.0.0", "jsonc-parser": "3.3.1", "pluralize": "8.0.0" }, "peerDependencies": { "prettier": "^3.0.0", "typescript": ">=6.0.0" }, "optionalPeers": ["prettier"] }, "sha512-Z9Xtp67fO5NuU7FgB/u44peK3XQnrL4qLxkf1dp6fqUk9l3ATBQneRNrWaC8e+HaimX8olxq2mH2ZXhhfalDhQ=="],
+
+    "@nestjs/storage": ["@nestjs/storage@0.0.5", "", { "peerDependencies": { "@nestjs/common": "^12.1.0", "@nestjs/core": "^12.1.0", "reflect-metadata": "^0.1.13 || ^0.2.0" } }, "sha512-Vd1oBnG+FjPe8C1hMrRo5yEfzj1ydvlp2e17ks9EXYXs1a5Ucp+IU2a4ZGeWd6I2Jr2pmvjp1jTo2QyjBAyaCQ=="],
 
     "@nestjs/testing": ["@nestjs/testing@12.5.1", "", { "dependencies": { "tslib": "2.9.1" }, "peerDependencies": { "@nestjs/common": "^12.0.0", "@nestjs/core": "^12.0.0", "@nestjs/microservices": "^12.0.0", "@nestjs/platform-express": "^12.0.0" }, "optionalPeers": ["@nestjs/microservices", "@nestjs/platform-express"] }, "sha512-k4cSasrAc1ur/Pgd4NJc7NxDYM0ZPc/XF7P670QddF/yWbX1XHqjnU4q51AK/zviwDXfCiyVzEJ87ZOh6rzboA=="],
 
