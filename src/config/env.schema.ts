@@ -11,6 +11,15 @@ export const envSchema = z
       .enum(['development', 'production', 'test'])
       .default('development'),
     PORT: z.coerce.number().int().positive().default(3000),
+    // Proxies whose X-Forwarded-* headers are trusted, so `req.ip` is the client's
+    // (rate limiting depends on it): "true" for any, or addresses/subnets such as
+    // "loopback" or "10.0.0.0/8,loopback". Empty: no proxy, use the socket address.
+    TRUST_PROXY: z
+      .string()
+      .default('')
+      .transform((value) =>
+        value === '' ? false : value === 'true' ? true : value,
+      ),
     // Comma-separated browser origins allowed to call the API (CORS) and to send
     // state-changing requests (CSRF). Empty: same-origin only.
     CORS_ORIGINS: z

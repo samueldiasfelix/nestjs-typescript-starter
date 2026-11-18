@@ -1,8 +1,9 @@
 import { Module, StandardSchemaValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { HttpClientErrorFilter } from './common/filters/http-client-error.filter.js';
@@ -15,6 +16,7 @@ import { AppHttpClientModule } from './infra/http-client/http-client.module.js';
 import { AppMailModule } from './infra/mail/mail.module.js';
 import { QueueModule } from './infra/queue/queue.module.js';
 import { AppStorageModule } from './infra/storage/storage.module.js';
+import { AppThrottlerModule } from './infra/throttler/throttler.module.js';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { AppStorageModule } from './infra/storage/storage.module.js';
     AppHttpClientModule,
     AppMailModule,
     AppStorageModule,
+    AppThrottlerModule,
   ],
   controllers: [AppController],
   providers: [
@@ -43,6 +46,7 @@ import { AppStorageModule } from './infra/storage/storage.module.js';
     },
     { provide: APP_FILTER, useClass: HttpClientErrorFilter },
     { provide: APP_FILTER, useClass: StorageErrorFilter },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

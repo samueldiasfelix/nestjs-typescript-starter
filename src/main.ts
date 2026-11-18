@@ -1,41 +1,59 @@
+import { existsSync } from 'node:fs';
 import { ConsoleLogger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { z } from 'zod';
 import { AppModule } from './app.module.js';
-import { Env } from './config/env.schema.js';
+import { envSchema } from './config/env.schema.js';
 
 async function bootstrap() {
+  // The adapter needs TRUST_PROXY before Nest (and ConfigService) exists, so
+  // load and validate the env here too. ConfigModule validates the same schema.
+  if (existsSync('.env')) {
+    process.loadEnvFile('.env');
+  }
+  const parsed = envSchema.safeParse(process.env);
+  if (!parsed.success) {
+    console.error(`Invalid environment:\n${z.prettifyError(parsed.error)}`);
+    process.exit(1);
+  }
+  const env = parsed.data;
+
   const app = await NestFactory.create<NestNodeApplication>(
     AppModule,
-    new NodeAdapter(),
+    new NodeAdapter({ trustProxy: env.TRUST_PROXY }),
     { bufferLogs: true },
   );
-
-  const config = app.get<ConfigService<Env, true>>(ConfigService);
-  const corsOrigins = config.get('CORS_ORIGINS', { infer: true });
 
   // Helmet 8's default headers, built into Nest.
   app.useSecurityHeaders();
   // Off unless origins are listed: same-origin only.
-  if (corsOrigins.length > 0) {
+  if (env.CORS_ORIGINS.length > 0) {
     app.enableCors({
-      origin: corsOrigins,
+      origin: env.CORS_ORIGINS,
       credentials: true,
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     });
   }
   // Rejects cross-site, state-changing browser requests (Sec-Fetch-Site/Origin),
   // except from the origins CORS allows. GET, HEAD and OPTIONS are never checked.
-  app.enableCsrfProtection({ trustedOrigins: corsOrigins });
+  app.enableCsrfProtection({ trustedOrigins: env.CORS_ORIGINS });
 
-  app.useLogger(
-    new ConsoleLogger({
-      json: config.get('NODE_ENV', { infer: true }) === 'production',
-    }),
-  );
+  app.useLogger(new ConsoleLogger({ json: env.NODE_ENV === 'production' }));
 
-  await app.listen(config.get('PORT', { infer: true }));
+  // OpenAPI docs: UI at /docs, definition at /docs-json and /docs-yaml. Not in production.
+  if (env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('API')
+      .setVersion('1.0')
+      .build();
+    SwaggerModule.setup('docs', app, () =>
+      SwaggerModule.createDocument(app, config),
+    );
+  }
+
+  await app.listen(env.PORT);
 }
 
 await bootstrap();

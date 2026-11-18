@@ -44,6 +44,8 @@ $ bun run start:dev
 $ bun run start:prod
 ```
 
+Outside production, the OpenAPI docs are at `/docs` (UI), `/docs-json` and `/docs-yaml`.
+
 ## Run tests
 
 ```bash
