@@ -77,6 +77,10 @@ async function bootstrap() {
     app.use('/reference', apiReference({ url: '/openapi.json' }));
   }
 
+  // On SIGTERM/SIGINT, runs the shutdown hooks: hands locks back, then closes
+  // Postgres, Redis and the queue workers.
+  app.enableShutdownHooks();
+
   await app.listen(env.PORT);
 }
 

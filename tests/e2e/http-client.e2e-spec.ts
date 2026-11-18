@@ -1,3 +1,4 @@
+import { Public } from '@nestjs/authentication';
 import { Controller, Get } from '@nestjs/common';
 import {
   HTTP_CLIENT_MODULE_OPTIONS,
@@ -8,6 +9,7 @@ import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module.js';
 
+@Public()
 @Controller()
 class ProxyController {
   constructor(private readonly client: HttpClient) {}

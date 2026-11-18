@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
+import { Public } from '@nestjs/authentication';
 import { Controller, Get, UseInterceptors } from '@nestjs/common';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
@@ -9,6 +10,7 @@ import { AppModule } from '../../src/app.module.js';
 // Needs a running Redis: `docker compose up -d`.
 const ROUTE = `/cached-${randomUUID()}`;
 
+@Public()
 @Controller()
 @UseInterceptors(CacheInterceptor)
 class CachedTestController {

@@ -15,8 +15,12 @@ import { DatabaseModule } from './infra/database/database.module.js';
 import { AppHttpClientModule } from './infra/http-client/http-client.module.js';
 import { AppMailModule } from './infra/mail/mail.module.js';
 import { QueueModule } from './infra/queue/queue.module.js';
+import { AppLocksModule } from './infra/locks/locks.module.js';
+import { RedisModule } from './infra/redis/redis.module.js';
 import { AppStorageModule } from './infra/storage/storage.module.js';
 import { AppThrottlerModule } from './infra/throttler/throttler.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
+import { HealthModule } from './modules/health/health.module.js';
 
 @Module({
   imports: [
@@ -28,12 +32,16 @@ import { AppThrottlerModule } from './infra/throttler/throttler.module.js';
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     DatabaseModule,
+    RedisModule,
     AppCacheModule,
     QueueModule,
     AppHttpClientModule,
     AppMailModule,
     AppStorageModule,
     AppThrottlerModule,
+    AppLocksModule,
+    AuthModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [

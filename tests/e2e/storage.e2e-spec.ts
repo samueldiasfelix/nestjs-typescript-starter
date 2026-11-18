@@ -1,3 +1,4 @@
+import { Public } from '@nestjs/authentication';
 import { Controller, Get, Param } from '@nestjs/common';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import {
@@ -8,6 +9,7 @@ import {
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module.js';
 
+@Public()
 @Controller('files')
 class FilesTestController {
   constructor(private readonly files: StorageDisk) {}

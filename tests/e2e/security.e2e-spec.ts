@@ -1,3 +1,4 @@
+import { Public } from '@nestjs/authentication';
 import { Controller, Post } from '@nestjs/common';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
@@ -6,6 +7,7 @@ import { AppModule } from '../../src/app.module.js';
 const TRUSTED = 'https://app.example.com';
 const EVIL = 'https://evil.example.com';
 
+@Public()
 @Controller()
 class EchoTestController {
   @Post('echo')

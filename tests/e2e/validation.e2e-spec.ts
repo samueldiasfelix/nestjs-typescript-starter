@@ -1,3 +1,4 @@
+import { Public } from '@nestjs/authentication';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
 import { Test } from '@nestjs/testing';
@@ -7,6 +8,7 @@ import { ROOT_KEY } from '../../src/common/pipes/grouped-validation-errors.pipe.
 
 const echoSchema = z.object({ name: z.string().min(1) });
 
+@Public()
 @Controller()
 class ValidationTestController {
   @Post('echo')

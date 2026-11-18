@@ -6,5 +6,7 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.e2e-spec.ts'],
+    // Needs a running Postgres: `docker compose up -d`.
+    globalSetup: ['./tests/e2e/setup/migrate.ts'],
   },
 });

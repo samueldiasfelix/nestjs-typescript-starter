@@ -1,9 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { Injectable, Logger, type OnApplicationShutdown } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger } from '@nestjs/common';
 import type { ThrottlerStorage } from '@nestjs/throttler';
 import { Redis } from 'ioredis';
-import { Env } from '../../config/env.schema.js';
 
 // Not exported by @nestjs/throttler's index.
 type ThrottlerStorageRecord = Awaited<
@@ -59,31 +57,16 @@ const toSeconds = (ms: number) => Math.ceil(ms / 1000);
 
 /** Rate-limit counters in the app's Redis, shared by every instance. */
 @Injectable()
-export class RedisThrottlerStorage
-  implements ThrottlerStorage, OnApplicationShutdown
-{
+export class RedisThrottlerStorage implements ThrottlerStorage {
   private readonly logger = new Logger(RedisThrottlerStorage.name);
-  private readonly redis: Redis;
   private failing = false;
-  private connectedOnce = false;
+  private connectedOnce: boolean;
 
-  constructor(config: ConfigService<Env, true>) {
-    this.redis = new Redis({
-      host: config.get('REDIS_HOST', { infer: true }),
-      port: config.get('REDIS_PORT', { infer: true }),
-      password: config.get('REDIS_PASSWORD', { infer: true }),
-      keyPrefix: 'throttle:',
-      // Requests at boot wait for the first connection, but never longer than this.
-      commandTimeout: 500,
-      maxRetriesPerRequest: 1,
-    });
-    this.redis.on('ready', () => {
+  constructor(private readonly redis: Redis) {
+    this.connectedOnce = redis.status === 'ready';
+    redis.on('ready', () => {
       this.connectedOnce = true;
     });
-    // Without a listener, connection errors are reported as unhandled.
-    this.redis.on('error', (error) =>
-      this.logger.debug(`Redis: ${error.message}`),
-    );
   }
 
   async increment(
@@ -101,8 +84,8 @@ export class RedisThrottlerStorage
       const [totalHits, expireMs, isBlocked, blockMs] = (await this.redis.eval(
         INCREMENT_SCRIPT,
         2,
-        key,
-        `${key}:block`,
+        `throttle:${key}`,
+        `throttle:${key}:block`,
         Date.now(),
         ttl,
         limit,
@@ -136,9 +119,5 @@ export class RedisThrottlerStorage
         timeToBlockExpire: 0,
       };
     }
-  }
-
-  async onApplicationShutdown() {
-    await this.redis.quit().catch(() => this.redis.disconnect());
   }
 }

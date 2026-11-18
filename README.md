@@ -29,6 +29,10 @@
 
 ```bash
 $ bun install
+
+# Postgres and Redis, then the database tables
+$ docker compose up -d
+$ bun run db:migrate
 ```
 
 ## Compile and run the project
@@ -46,13 +50,15 @@ $ bun run start:prod
 
 Outside production, the API reference ([Scalar](https://scalar.com)) is at `/reference`, and the OpenAPI definition at `/openapi.json` and `/openapi.yaml`.
 
+Every route requires a signed-in user (session cookie, `/auth/sign-up` and `/auth/sign-in`) and a `@Can()` policy, unless it is marked `@Public()` or `@Can.Anyone()`. Health probes: `/health/live` and `/health/ready`.
+
 ## Run tests
 
 ```bash
 # unit tests
 $ bun run test
 
-# e2e tests (the queue, cache and database specs need Redis and Postgres: `docker compose up -d`)
+# e2e tests (need Postgres and Redis: `docker compose up -d`; migrations run first)
 $ bun run test:e2e
 
 # test coverage
