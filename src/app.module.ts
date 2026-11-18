@@ -4,11 +4,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpClientModule } from '@nestjs/http-client';
+import { FileMailTransport, MailModule, SmtpTransport } from '@nestjs/mail';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { Env, envSchema } from './env.schema.js';
-import { groupedValidationErrors } from './grouped-validation-errors.js';
+import { groupedValidationErrors } from './grouped-validation-errors.pipe.js';
 import { HttpClientErrorFilter } from './http-client-error.filter.js';
 
 @Module({
@@ -31,6 +32,18 @@ import { HttpClientErrorFilter } from './http-client-error.filter.js';
       }),
     }),
     HttpClientModule.forRoot({ timeout: '10s' }),
+    MailModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) => ({
+        transport:
+          config.get('MAIL_TRANSPORT', { infer: true }) === 'smtp'
+            ? new SmtpTransport({
+                url: config.get('MAIL_SMTP_URL', { infer: true }),
+              })
+            : new FileMailTransport({ directory: 'var/mail' }),
+        from: config.get('MAIL_FROM', { infer: true }),
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [
