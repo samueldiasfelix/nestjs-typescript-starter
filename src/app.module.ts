@@ -1,13 +1,15 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module, StandardSchemaValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { HttpClientModule } from '@nestjs/http-client';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { Env, envSchema } from './env.schema.js';
 import { groupedValidationErrors } from './grouped-validation-errors.js';
+import { HttpClientErrorFilter } from './http-client-error.filter.js';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { groupedValidationErrors } from './grouped-validation-errors.js';
         },
       }),
     }),
+    HttpClientModule.forRoot({ timeout: '10s' }),
   ],
   controllers: [AppController],
   providers: [
@@ -38,6 +41,7 @@ import { groupedValidationErrors } from './grouped-validation-errors.js';
         exceptionFactory: groupedValidationErrors,
       }),
     },
+    { provide: APP_FILTER, useClass: HttpClientErrorFilter },
   ],
 })
 export class AppModule {}
