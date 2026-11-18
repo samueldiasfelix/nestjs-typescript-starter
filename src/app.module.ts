@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LocalDisk, S3Disk, StorageModule } from '@nestjs/storage';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { DatabaseModule } from './database/database.module.js';
 import { Env, envSchema } from './env.schema.js';
 import { groupedValidationErrors } from './grouped-validation-errors.pipe.js';
 import { HttpClientErrorFilter } from './http-client-error.filter.js';
@@ -21,6 +22,7 @@ import { StorageErrorFilter } from './storage-error.filter.js';
       cache: true,
       validationSchema: envSchema,
     }),
+    DatabaseModule,
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     BullModule.forRootAsync({

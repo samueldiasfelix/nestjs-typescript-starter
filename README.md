@@ -50,7 +50,7 @@ $ bun run start:prod
 # unit tests
 $ bun run test
 
-# e2e tests (the queue spec needs Redis: `docker compose up -d`)
+# e2e tests (the queue and database specs need Redis and Postgres: `docker compose up -d`)
 $ bun run test:e2e
 
 # test coverage
