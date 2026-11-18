@@ -4,8 +4,6 @@ import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { HttpClientErrorFilter } from './common/filters/http-client-error.filter.js';
 import { StorageErrorFilter } from './common/filters/storage-error.filter.js';
 import { groupedValidationErrors } from './common/pipes/grouped-validation-errors.pipe.js';
@@ -43,9 +41,8 @@ import { HealthModule } from './modules/health/health.module.js';
     AuthModule,
     HealthModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_PIPE,
       useValue: new StandardSchemaValidationPipe({
