@@ -41,6 +41,7 @@
     "@nestjs/storage": "^0.0.5",
     "@nestjs/swagger": "^12.1.2",
     "@nestjs/throttler": "^6.8.0",
+    "@scalar/nestjs-api-reference": "^1.2.39",
     "bullmq": "^6.7.7",
     "cache-manager": "^7.2.9",
     "drizzle-orm": "^0.45.4",

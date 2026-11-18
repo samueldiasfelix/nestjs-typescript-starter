@@ -1,8 +1,15 @@
+import { randomBytes } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { ConsoleLogger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { NestNodeApplication, NodeAdapter } from '@nestjs/platform-node';
+import {
+  NestNodeApplication,
+  NodeAdapter,
+  type NodeRequest,
+  type NodeResponse,
+} from '@nestjs/platform-node';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { apiReference } from '@scalar/nestjs-api-reference';
 import { z } from 'zod';
 import { AppModule } from './app.module.js';
 import { envSchema } from './config/env.schema.js';
@@ -42,7 +49,7 @@ async function bootstrap() {
 
   app.useLogger(new ConsoleLogger({ json: env.NODE_ENV === 'production' }));
 
-  // OpenAPI docs: UI at /docs, definition at /docs-json and /docs-yaml. Not in production.
+  // API reference (Scalar) at /docs, OpenAPI definition at /docs-json. Not in production.
   if (env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('NestJS TypeScript Starter API')
@@ -51,9 +58,18 @@ async function bootstrap() {
       )
       .setVersion('1.0')
       .build();
-    SwaggerModule.setup('docs', app, () =>
-      SwaggerModule.createDocument(app, config),
-    );
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, documentFactory, { ui: false });
+    app.use('/docs', (req: NodeRequest, res: NodeResponse) => {
+      // Scalar's scripts (CDN and inline) need a nonce under the app's CSP.
+      const nonce = randomBytes(16).toString('base64');
+      const csp = String(res.getHeader('Content-Security-Policy'));
+      res.setHeader(
+        'Content-Security-Policy',
+        csp.replace('script-src ', `script-src 'nonce-${nonce}' `),
+      );
+      apiReference({ url: '/docs-json', nonce })(req, res);
+    });
   }
 
   await app.listen(env.PORT);

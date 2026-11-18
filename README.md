@@ -44,7 +44,7 @@ $ bun run start:dev
 $ bun run start:prod
 ```
 
-Outside production, the OpenAPI docs are at `/docs` (UI), `/docs-json` and `/docs-yaml`.
+Outside production, the API reference ([Scalar](https://scalar.com)) is at `/docs`, and the OpenAPI definition at `/docs-json` and `/docs-yaml`.
 
 ## Run tests
 
